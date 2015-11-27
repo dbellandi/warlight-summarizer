@@ -136,6 +136,8 @@ getGame = (id,callback) ->
 
 startServer = () ->
 
+    runPort=process.env.PORT || 8080
+
     http.createServer (req, res) ->
         try
             uri=url.parse(req.url)
@@ -163,8 +165,9 @@ startServer = () ->
         finally
             console.log "url: #{req.url}"
 
-    .listen 8080, '127.0.0.1'
-    console.log 'Server running at http://127.0.0.1:8080/'
+    #.listen 8080, '127.0.0.1'
+    .listen runPort
+    console.log "Server running on #{runPort}"
 
 
 

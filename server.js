@@ -155,6 +155,8 @@
   };
 
   startServer = function() {
+    var runPort;
+    runPort = process.env.PORT || 8080;
     http.createServer(function(req, res) {
       var qry, uri;
       try {
@@ -192,8 +194,8 @@
       } finally {
         console.log("url: " + req.url);
       }
-    }).listen(8080, '127.0.0.1');
-    return console.log('Server running at http://127.0.0.1:8080/');
+    }).listen(runPort);
+    return console.log("Server running on " + runPort);
   };
 
   testSummary = function() {
