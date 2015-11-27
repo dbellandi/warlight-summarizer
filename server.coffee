@@ -9,6 +9,9 @@ request=require 'request'
 # 9770103
 Summary=require('./summary.js').Summary
 
+express=require 'express'
+app=express()
+
 
 class QueryString
 
@@ -134,40 +137,83 @@ getGame = (id,callback) ->
             callback fixjson(body.toString())
 
 
+handleRequest = (req,res) ->
+    try
+        uri=url.parse(req.url)
+        if not uri.query
+            return
+        qry=new QueryString(uri.query)
+        console.log uri.toString()
+
+        if uri.pathname=='/game'
+            getGame qry.get('id'), (output) ->
+                res.writeHead 200, {'Content-Type': 'application/json'}
+                res.end output
+
+        else if uri.pathname=='/summary'
+            getGame qry.get('id'), (output) ->
+                try
+                    summary=new Summary(output)
+                    res.writeHead 200, {'Content-Type': 'text/plain'}
+                    res.end summary.getText()
+                catch error
+                    console.log "error"
+                    console.log error
+                    res.writeHead 500
+                    res.end error.toString()
+                finally
+        console.log "url: #{req.url}"
+
+
 startServer = () ->
 
     runPort=process.env.PORT || 8080
 
-    http.createServer (req, res) ->
-        try
-            uri=url.parse(req.url)
-            if not uri.query
-                return
-            qry=new QueryString(uri.query)
-            console.log uri.toString()
-
-            if uri.pathname=='/game'
-                getGame qry.get('id'), (output) ->
-                    res.writeHead 200, {'Content-Type': 'application/json'}
-                    res.end output
-
-            else if uri.pathname=='/summary'
-                getGame qry.get('id'), (output) ->
-                    try
-                        summary=new Summary(output)
-                        res.writeHead 200, {'Content-Type': 'text/plain'}
-                        res.end summary.getText()
-                    catch error
-                        console.log "error"
-                        console.log error
-                        res.writeHead 500
-                        res.end error.toString()
-        finally
-            console.log "url: #{req.url}"
+#    http.createServer (req, res) ->
+#        try
+#            uri=url.parse(req.url)
+#            if not uri.query
+#                return
+#            qry=new QueryString(uri.query)
+#            console.log uri.toString()
+#
+#            if uri.pathname=='/game'
+#                getGame qry.get('id'), (output) ->
+#                    res.writeHead 200, {'Content-Type': 'application/json'}
+#                    res.end output
+#
+#            else if uri.pathname=='/summary'
+#                getGame qry.get('id'), (output) ->
+#                    try
+#                        summary=new Summary(output)
+#                        res.writeHead 200, {'Content-Type': 'text/plain'}
+#                        res.end summary.getText()
+#                    catch error
+#                        console.log "error"
+#                        console.log error
+#                        res.writeHead 500
+#                        res.end error.toString()
+#        finally
+#            console.log "url: #{req.url}"
 
     #.listen 8080, '127.0.0.1'
+
+    http.createServer handleRequest
     .listen runPort
     console.log "Server running on #{runPort}"
+
+
+app.get /.*/, (req,res) ->
+    console.log "request: #{req.url}"
+    handleRequest req,res
+
+startApp = () ->
+    server=app.listen process.env.PORT || 8080, () ->
+        host=server.address().address
+        port=server.address().port
+        console.log "app listening at http://#{host}:#{port}"
+
+
 
 
 
@@ -182,5 +228,6 @@ testSummary = () ->
 
 # main
 
-startServer()
+#startServer()
+startApp()
 #testSummary()
