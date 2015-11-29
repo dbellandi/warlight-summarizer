@@ -19,7 +19,7 @@ class SummarySection
     getHeaderText: () =>
         r=(if @header.turn==0 then '[After Distribution]' else "[Turn #{@header.turn}]")
         if @notes.length
-            r+='\n'+@notes.join('\n')
+            r+=' '+@notes.join('')
         r
 
     getBodyText: () =>
@@ -120,10 +120,14 @@ class Summary
         @current.header=
             turn: 0
 
+        @current.notes.push '\n'
         for k,p of @players
-            @current.notes.push "#{p.name} receives picks #{(x+1 for x in p.received).join(',')}"
-            @current.notes.push "    starts in #{ ("#{x.bonus.name} (#{x.name})" for x in p.starts).join(', ')}"
-            @current.notes.push "    knows enemy is in #{ ("#{x.bonus.name} (#{x.name})" for x in p.intel).join(', ')}"
+            @current.notes.push "#{p.name} receives picks #{(x+1 for x in p.received).join(',')}\n"
+            @current.notes.push "    starts in #{ ("#{x.bonus.name} (#{x.name})" for x in p.starts).join(', ')}\n"
+            if p.intel.length>0
+                @current.notes.push "    knows enemy is in #{ ("#{x.bonus.name} (#{x.name})" for x in p.intel).join(', ')}\n"
+            else
+                @current.notes.push "    has no intel on the enemy\n"
 
         @sections.push @current
 
@@ -156,7 +160,7 @@ class Summary
                 p.bonusIncome=(b.value for b in @map.allBonuses when b.getOwner()==p).sum()
                 p.mobileArmies=((if x.armies>0 then x.armies-1 else 0) for x in @map.allTerrs when x.owner==p).sum()
                 p.ownedTerrs=(x for x in @map.allTerrs when x.owner==p)
-                @current.notes.push "  # #{p.name} - [bonus: #{p.bonusIncome}] - [mobile armies: #{p.mobileArmies}]"
+                @current.notes.push "  <<#{p.name} [bonus: #{p.bonusIncome}, mobile armies: #{p.mobileArmies}]>>"
 
 
             for o in turn.orders
@@ -234,14 +238,14 @@ class Capture
     constructor: (@bonus,@player)  ->
 
     getText: () =>
-        "#{@player.name} captures #{@bonus.name}\n"
+        "#{@player.name} CAPTURES #{@bonus.name} (+#{@bonus.value})\n"
 
 
 class Break
     constructor: (@bonus,@from,@player,@defender)  ->
 
     getText: () =>
-        "#{@player.name} breaks #{@bonus.name} from #{@from.name}\n"
+        "#{@player.name} BREAKS #{@bonus.name} from #{@from.name} (-#{@bonus.value})\n"
 
 
 class BreakFail
@@ -262,7 +266,7 @@ class Knockout
     constructor: (@terr,@player,@defender)  ->
 
     getText: () =>
-        "#{@player.name} takes #{@terr.name}, knocking #{@defender.name} out of the area\n"
+        "#{@player.name} takes #{@terr.name}, KNOCKING #{@defender.name} out of the area\n"
 
 
 class KnockoutFail

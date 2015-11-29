@@ -40,7 +40,7 @@
       var r;
       r = (this.header.turn === 0 ? '[After Distribution]' : "[Turn " + this.header.turn + "]");
       if (this.notes.length) {
-        r += '\n' + this.notes.join('\n');
+        r += ' ' + this.notes.join('');
       }
       return r;
     };
@@ -247,6 +247,7 @@
       this.current.header = {
         turn: 0
       };
+      this.current.notes.push('\n');
       ref6 = this.players;
       for (k in ref6) {
         p = ref6[k];
@@ -259,7 +260,7 @@
             results.push(x + 1);
           }
           return results;
-        })()).join(',')));
+        })()).join(',')) + "\n");
         this.current.notes.push("    starts in " + (((function() {
           var len4, ref7, results, s;
           ref7 = p.starts;
@@ -269,17 +270,21 @@
             results.push(x.bonus.name + " (" + x.name + ")");
           }
           return results;
-        })()).join(', ')));
-        this.current.notes.push("    knows enemy is in " + (((function() {
-          var len4, ref7, results, s;
-          ref7 = p.intel;
-          results = [];
-          for (s = 0, len4 = ref7.length; s < len4; s++) {
-            x = ref7[s];
-            results.push(x.bonus.name + " (" + x.name + ")");
-          }
-          return results;
-        })()).join(', ')));
+        })()).join(', ')) + "\n");
+        if (p.intel.length > 0) {
+          this.current.notes.push("    knows enemy is in " + (((function() {
+            var len4, ref7, results, s;
+            ref7 = p.intel;
+            results = [];
+            for (s = 0, len4 = ref7.length; s < len4; s++) {
+              x = ref7[s];
+              results.push(x.bonus.name + " (" + x.name + ")");
+            }
+            return results;
+          })()).join(', ')) + "\n");
+        } else {
+          this.current.notes.push("    has no intel on the enemy\n");
+        }
       }
       this.sections.push(this.current);
       ref7 = this.data.turns;
@@ -348,7 +353,7 @@
             }
             return results;
           }).call(this);
-          this.current.notes.push("  # " + p.name + " - [bonus: " + p.bonusIncome + "] - [mobile armies: " + p.mobileArmies + "]");
+          this.current.notes.push("  <<" + p.name + " [bonus: " + p.bonusIncome + ", mobile armies: " + p.mobileArmies + "]>>");
         }
         ref11 = turn.orders;
         for (y = 0, len8 = ref11.length; y < len8; y++) {
@@ -496,7 +501,7 @@
     }
 
     Capture.prototype.getText = function() {
-      return this.player.name + " captures " + this.bonus.name + "\n";
+      return this.player.name + " CAPTURES " + this.bonus.name + " (+" + this.bonus.value + ")\n";
     };
 
     return Capture;
@@ -513,7 +518,7 @@
     }
 
     Break.prototype.getText = function() {
-      return this.player.name + " breaks " + this.bonus.name + " from " + this.from.name + "\n";
+      return this.player.name + " BREAKS " + this.bonus.name + " from " + this.from.name + " (-" + this.bonus.value + ")\n";
     };
 
     return Break;
@@ -561,7 +566,7 @@
     }
 
     Knockout.prototype.getText = function() {
-      return this.player.name + " takes " + this.terr.name + ", knocking " + this.defender.name + " out of the area\n";
+      return this.player.name + " takes " + this.terr.name + ", KNOCKING " + this.defender.name + " out of the area\n";
     };
 
     return Knockout;
