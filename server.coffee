@@ -133,8 +133,12 @@ getGame = (id,callback) ->
 
 
     response=request args, (error,response,body) ->
-            console.log("response finished")
-            callback fixjson(body.toString())
+            try
+                callback fixjson(body.toString())
+            catch error
+                console.log error
+                callback error.toString()
+
 
 
 handleRequest = (req,res) ->

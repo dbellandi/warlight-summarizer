@@ -153,8 +153,14 @@
       body: "Email=dan.bellandi%40gmail.com&APIToken=YUKScGQ1llHQCD%40OrNslw5R9kCxPJCe%23Y0e81"
     };
     return response = request(args, function(error, response, body) {
-      console.log("response finished");
-      return callback(fixjson(body.toString()));
+      var error1;
+      try {
+        return callback(fixjson(body.toString()));
+      } catch (error1) {
+        error = error1;
+        console.log(error);
+        return callback(error.toString());
+      }
     });
   };
 
