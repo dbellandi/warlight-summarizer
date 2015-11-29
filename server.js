@@ -163,10 +163,16 @@
     try {
       uri = url.parse(req.url);
       if (!uri.query) {
+        res.writeHead(200, {
+          'Content-Type': 'text/plain'
+        });
+        res.end('use /summary?id=[gameid]>');
         return;
       }
       qry = new QueryString(uri.query);
-      console.log(uri.toString());
+      if (uri.pathname !== '/favicon.ico') {
+        console.log(uri.toString());
+      }
       if (uri.pathname === '/game') {
         getGame(qry.get('id'), function(output) {
           res.writeHead(200, {
@@ -193,6 +199,11 @@
 
           }
         });
+      } else {
+        res.writeHead(200, {
+          'Content-Type': 'text/plain'
+        });
+        res.end('use /summary?id=[gameid]>');
       }
       return console.log("url: " + req.url);
     } catch (undefined) {}

@@ -409,7 +409,6 @@
                     }
                     return results;
                   }).call(this);
-                  console.log(zz);
                   if (!zz.length && oldOwner === null) {
                     this.current.events.push(new Expand(tto.bonus, tto.owner));
                   }
@@ -691,7 +690,7 @@
     Map.prototype.bonuses = {};
 
     function Map(m) {
-      var b, i, id, l, len, len1, len2, len3, len4, len5, len6, n, q, ref, ref1, ref2, ref3, ref4, ref5, ref6, s, t, u, v, w, xb, xt;
+      var b, i, id, l, len, len1, len2, len3, len4, len5, n, q, ref, ref1, ref2, ref3, ref4, ref5, s, t, u, v, xb, xt;
       this.m = m;
       ref = this.m.bonuses;
       for (i = l = 0, len = ref.length; l < len; i = ++l) {
@@ -732,11 +731,6 @@
           id = ref5[v];
           this.terrs[t.id].connects.push(this.terrs[id]);
         }
-      }
-      ref6 = this.terrs;
-      for (i = w = 0, len6 = ref6.length; w < len6; i = ++w) {
-        t = ref6[i];
-        console.log(i + " " + t.name + " " + t.bonus.name);
       }
     }
 

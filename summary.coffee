@@ -190,7 +190,7 @@ class Summary
                                     changed.newOwner?.bonusIncome+=changed.bonus.value
                             else
                                 zz=(x for x in @current.events when x instanceof Expand and x.player==tto.owner and x.bonus==tto.bonus)
-                                console.log zz
+                                #console.log zz
                                 if not zz.length and oldOwner is null
                                     @current.events.push new Expand(tto.bonus,tto.owner)
                             tto.armies=o.armies-o.attackersKilled
@@ -325,7 +325,6 @@ class Bonus
         return xo
 
     addTerr: (t) =>
-        #console.log "#{t.name} added to #{@name}"
         @terrs.push t
 
 
@@ -376,7 +375,7 @@ class Map
 
 
 
-        for t,i in @terrs
-            console.log "#{i} #{t.name} #{t.bonus.name}"
+#        for t,i in @terrs
+#            console.log "#{i} #{t.name} #{t.bonus.name}"
 
 
