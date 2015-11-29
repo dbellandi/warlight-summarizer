@@ -170,18 +170,15 @@
         return;
       }
       qry = new QueryString(uri.query);
-      if (uri.pathname !== '/favicon.ico') {
-        console.log(uri.toString());
-      }
       if (uri.pathname === '/game') {
-        getGame(qry.get('id'), function(output) {
+        return getGame(qry.get('id'), function(output) {
           res.writeHead(200, {
             'Content-Type': 'application/json'
           });
           return res.end(output);
         });
       } else if (uri.pathname === '/summary') {
-        getGame(qry.get('id'), function(output) {
+        return getGame(qry.get('id'), function(output) {
           var error, error1, summary;
           try {
             summary = new Summary(output);
@@ -203,9 +200,8 @@
         res.writeHead(200, {
           'Content-Type': 'text/plain'
         });
-        res.end('use /summary?id=[gameid]>');
+        return res.end('use /summary?id=[gameid]>');
       }
-      return console.log("url: " + req.url);
     } catch (undefined) {}
   };
 
@@ -217,7 +213,9 @@
   };
 
   app.get(/.*/, function(req, res) {
-    console.log("request: " + req.url);
+    if (req.url !== '/favicon.ico') {
+      console.log("request: " + req.url);
+    }
     return handleRequest(req, res);
   });
 

@@ -145,7 +145,7 @@ handleRequest = (req,res) ->
             res.end 'use /summary?id=[gameid]>'
             return
         qry=new QueryString(uri.query)
-        console.log uri.toString() unless uri.pathname=='/favicon.ico'
+        #console.log uri.toString() unless uri.pathname=='/favicon.ico'
 
         if uri.pathname=='/game'
             getGame qry.get('id'), (output) ->
@@ -167,7 +167,7 @@ handleRequest = (req,res) ->
         else
             res.writeHead 200, {'Content-Type': 'text/plain'}
             res.end 'use /summary?id=[gameid]>'
-        console.log "url: #{req.url}"
+        #console.log "url: #{req.url}"
 
 
 startServer = () ->
@@ -209,7 +209,7 @@ startServer = () ->
 
 
 app.get /.*/, (req,res) ->
-    console.log "request: #{req.url}"
+    console.log "request: #{req.url}" unless req.url=='/favicon.ico'
     handleRequest req,res
 
 startApp = () ->
